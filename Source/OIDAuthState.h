@@ -196,7 +196,7 @@ typedef void (^OIDAuthStateAuthorizationCallback)(OIDAuthState *_Nullable authSt
  */
 - (void)performActionWithFreshTokens:(OIDAuthStateAction)action
          additionalRefreshParameters:
-    (nullable NSDictionary<NSString *, NSString *> *)additionalParameters;
+    (nullable NSDictionary<NSString *, NSString *> *)additionalRefreshParameters;
 
 /*! @brief Forces a token refresh the next time @c OIDAuthState.performActionWithFreshTokens: is
         called, even if the current tokens are considered valid.
