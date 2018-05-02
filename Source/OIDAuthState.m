@@ -155,7 +155,7 @@ static const NSUInteger kExpiryTimeTolerance = 60;
     OID_UNAVAILABLE_USE_INITIALIZER(@selector(initWithAuthorizationResponse:tokenResponse:));
 
 /*! @brief Creates an auth state from an authorization response.
-    @param response The authorization response.
+    @param authorizationResponse The authorization response.
  */
 - (nullable instancetype)initWithAuthorizationResponse:
     (OIDAuthorizationResponse *)authorizationResponse {
@@ -164,7 +164,7 @@ static const NSUInteger kExpiryTimeTolerance = 60;
 
 
 /*! @brief Designated initializer.
-    @param response The authorization response.
+    @param authorizationResponse The authorization response.
     @discussion Creates an auth state from an authorization response and token response.
  */
 - (nullable instancetype)initWithAuthorizationResponse:
@@ -440,25 +440,25 @@ static const NSUInteger kExpiryTimeTolerance = 60;
     dispatch_async(dispatch_get_main_queue(), ^() {
       // update OIDAuthState based on response
       if (response) {
-        _needsTokenRefresh = NO;
+          self->_needsTokenRefresh = NO;
         [self updateWithTokenResponse:response error:nil];
       } else {
         if (error.domain == OIDOAuthTokenErrorDomain) {
-          _needsTokenRefresh = NO;
+            self->_needsTokenRefresh = NO;
           [self updateWithAuthorizationError:error];
         } else {
-          if ([_errorDelegate respondsToSelector:
+            if ([self->_errorDelegate respondsToSelector:
               @selector(authState:didEncounterTransientError:)]) {
-            [_errorDelegate authState:self didEncounterTransientError:error];
+                [self->_errorDelegate authState:self didEncounterTransientError:error];
           }
         }
       }
 
       // nil the pending queue and process everything that was queued up
       NSArray *actionsToProcess;
-      @synchronized(_pendingActionsSyncObject) {
-        actionsToProcess = _pendingActions;
-        _pendingActions = nil;
+        @synchronized(self->_pendingActionsSyncObject) {
+            actionsToProcess = self->_pendingActions;
+            self->_pendingActions = nil;
       }
       for (OIDAuthStateAction actionToProcess in actionsToProcess) {
         actionToProcess(self.accessToken, self.idToken, error);
